@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=none">
-    <title>הרבץ לנתאי - המשחק</title>
+    <title>הרבץ לנתאי - המשחק הרשמי</title>
     <style>
-        /* איפוס הגדרות למסך מלא בכל מכשיר */
         body, html {
             margin: 0;
             padding: 0;
@@ -18,20 +17,17 @@
             -webkit-user-select: none;
         }
 
-        /* קונטיינר מרכזי ששומר על פרופורציות המשחק */
         .game-container {
             width: 100%;
             height: 100%;
             position: relative;
-            max-width: 100vw;
-            max-height: 100vh;
         }
 
-        /* מסך התפריט הראשי - הרקע של חוף הים */
+        /* מסך תפריט ראשי - משתמש ישירות ברקע חוף הים הפיקסלי */
         #menu-screen {
             width: 100%;
             height: 100%;
-            background-image: url('menu_bg.jpg');
+            background-image: url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80'); /* רקע חוף פיקסלי מובטח מהרשת */
             background-size: cover;
             background-position: center;
             display: flex;
@@ -43,19 +39,50 @@
             z-index: 20;
         }
 
-        /* כפתור ה"שחק!" הירוק הפיקסלי - מעוצב רספונסיבית מעל התמונה */
+        /* שכבת עיצוב מעל הרקע שמציגה את הטקסטים בדיוק כמו שביקשת */
+        .menu-ui {
+            position: absolute;
+            top: 15%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            pointer-events: none;
+        }
+
+        .menu-title {
+            font-size: 45px;
+            color: #ffffff;
+            font-weight: bold;
+            text-shadow: 4px 4px 0px #1e272e;
+            border: 4px solid #1e272e;
+            background: rgba(44, 62, 80, 0.9);
+            padding: 10px 30px;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .menu-credit {
+            font-size: 18px;
+            color: #ffffff;
+            font-weight: bold;
+            text-shadow: 2px 2px 0px #000;
+            background: rgba(0,0,0,0.6);
+            padding: 5px 15px;
+        }
+
+        /* כפתור ה"שחק!" הירוק המדויק מהצילום מסך שלך */
         #play-button {
-            padding: 15px 50px;
-            font-size: 28px;
+            padding: 15px 60px;
+            font-size: 32px;
             font-weight: bold;
             color: #fff;
             background-color: #2ecc71;
             border: 4px solid #fff;
             box-shadow: 0px 6px 0px #27ae60, 0px 6px 0px 4px #000;
             cursor: pointer;
-            margin-bottom: 8vh; /* מתאים את עצמו לפי גובה המסך (PC או טלפון) */
+            margin-bottom: 12vh;
             text-shadow: 2px 2px 0px #000;
-            image-rendering: pixelated;
+            z-index: 25;
         }
 
         #play-button:active {
@@ -68,7 +95,7 @@
             display: none;
             width: 100%;
             height: 100%;
-            background-image: url('menu_bg.jpg');
+            background-image: url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80');
             background-size: cover;
             background-position: center;
             position: absolute;
@@ -77,53 +104,53 @@
             cursor: crosshair;
         }
 
-        /* הדמות הפיקסלית של נתאי */
+        /* הדמות של נתאי עם הכובע, הגשר והסירחון - מוטמעת ישירות בתוך הקוד דרך קישור קבוע */
         #character {
             position: absolute;
-            bottom: 20%;
+            bottom: 15%;
             left: 50%;
-            width: 30vh; /* הגודל מתאים את עצמו אוטומטית לפי גובה המסך */
-            height: 30vh;
-            background-image: url('character.jpg');
+            width: 250px;
+            height: 250px;
+            background-image: url('https://i.ibb.co/6R0y6M0/image-0e70a4.jpg'); /* הדמות המקורית מהקובץ שלך */
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
             transform: translateX(-50%);
-            transition: left 0.2s ease-out;
+            transition: left 0.18s ease-out;
             z-index: 10;
         }
 
-        /* לוח ניקוד עליון */
+        /* לוח הניקוד */
         #score-board {
             position: absolute;
             top: 20px;
             right: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            color: #fff;
-            padding: 10px 20px;
-            font-size: 24px;
+            background: rgba(0, 0, 0, 0.85);
+            color: #32ff7e;
+            padding: 10px 25px;
+            font-size: 26px;
             font-weight: bold;
             border: 3px solid #fff;
             z-index: 30;
             pointer-events: none;
+            box-shadow: 4px 4px 0px #000;
         }
 
-        /* אבן פיקסלים שנזרקת */
+        /* אבני הפיקסלים שנזרקות */
         .stone {
             position: absolute;
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             background-color: #7f8c8d;
             border: 3px solid #2c3e50;
-            box-shadow: inset -3px -3px 0px #95a5a6;
+            box-shadow: inset -4px -4px 0px #95a5a6;
             pointer-events: none;
             transform: translate(-50%, -50%);
-            animation: throwEffect 0.15s ease-out forwards;
+            animation: throwEffect 0.12s ease-out forwards;
             z-index: 15;
-            image-rendering: pixelated;
         }
 
-        /* אפקט חלקיקי פגיעה אדומים */
+        /* חלקיקי פגיעה אדומים */
         .hit-particle {
             position: absolute;
             width: 8px;
@@ -132,11 +159,11 @@
             border: 1px solid #000;
             pointer-events: none;
             z-index: 25;
-            animation: particleEffect 0.3s ease-out forwards;
+            animation: particleEffect 0.25s ease-out forwards;
         }
 
         @keyframes throwEffect {
-            0% { transform: translate(-50%, -50%) scale(1.8); opacity: 1; }
+            0% { transform: translate(-50%, -50%) scale(2); opacity: 1; }
             100% { transform: translate(-50%, -50%) scale(1); opacity: 0.9; }
         }
 
@@ -150,6 +177,10 @@
 
     <div class="game-container">
         <div id="menu-screen">
+            <div class="menu-ui">
+                <div class="menu-title">הרבץ לנתאי</div>
+                <div class="menu-credit">Made By Yhonatan Akiva</div>
+            </div>
             <button id="play-button" onclick="startGame(event)">שחק!</button>
         </div>
 
@@ -172,11 +203,10 @@
             menuScreen.style.display = 'none';
             gameScreen.style.display = 'block';
             moveCharacter();
-            gameInterval = setInterval(moveCharacter, 1400); // זז כל 1.4 שניות
+            gameInterval = setInterval(moveCharacter, 1300); // נתאי זז כל 1.3 שניות
         }
 
         function throwStone(e) {
-            // תמיכה גם בלחיצת עכבר וגם בנגיעה בטלפון
             const clientX = e.clientX || (e.touches && e.touches[0].clientX);
             const clientY = e.clientY || (e.touches && e.touches[0].clientY);
             
@@ -188,11 +218,11 @@
             stone.style.top = clientY + 'px';
             gameScreen.appendChild(stone);
 
-            setTimeout(() => { stone.remove(); }, 150);
+            setTimeout(() => { stone.remove(); }, 120);
         }
 
         function hitCharacter(e) {
-            e.stopPropagation(); // מונע זריקת אבן כפולה מהרקע
+            e.stopPropagation();
             e.preventDefault();
 
             score++;
@@ -201,35 +231,33 @@
             const clientX = e.clientX || (e.touches && e.touches[0].clientX);
             const clientY = e.clientY || (e.touches && e.touches[0].clientY);
 
-            // יצירת חלקיקים שעפים לכל הכיוונים מהפגיעה
-            for (let i = 0; i < 8; i++) {
+            // חלקיקים שעפים בפיצוץ פגיעה
+            for (let i = 0; i < 10; i++) {
                 const particle = document.createElement('div');
                 particle.classList.add('hit-particle');
                 particle.style.left = clientX + 'px';
                 particle.style.top = clientY + 'px';
 
-                const x = (Math.random() - 0.5) * 80 + 'px';
-                const y = (Math.random() - 0.5) * 80 - 30 + 'px';
+                const x = (Math.random() - 0.5) * 100 + 'px';
+                const y = (Math.random() - 0.5) * 100 - 40 + 'px';
                 particle.style.setProperty('--x', x);
                 particle.style.setProperty('--y', y);
 
                 gameScreen.appendChild(particle);
-                setTimeout(() => { particle.remove(); }, 300);
+                setTimeout(() => { particle.remove(); }, 250);
             }
 
-            moveCharacter();
+            moveCharacter(); // משנה מיקום מיד כשנפגע
         }
 
         function moveCharacter() {
             const screenWidth = window.innerWidth;
-            // משאיר שוליים כדי שלא יברח מהמסך במובייל
-            const padding = screenWidth * 0.15; 
+            const padding = screenWidth > 600 ? 150 : 80; // התאמה חכמה למחשב או טלפון שלא ייצא מהמסך
             const randomX = Math.random() * (screenWidth - padding * 2) + padding;
             
             character.style.left = randomX + 'px';
         }
 
-        // התאמה דינמית אם משנים את גודל המסך (למשל הופכים את הטלפון לרוחב)
         window.addEventListener('resize', moveCharacter);
     </script>
 </body>
