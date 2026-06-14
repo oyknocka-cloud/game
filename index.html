@@ -5,61 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>הרבץ לנתאי - המשחק</title>
     <style>
-        /* עיצוב כללי ואיפוס */
         body, html {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
             overflow: hidden;
-            font-family: 'Courier New', Courier, monospace; /* פונט בסגנון מחשב ישן/פיקסלים */
+            font-family: 'Courier New', Courier, monospace;
             user-select: none;
+            background-color: #87CEEB; /* צבע גיבוי כחול שמיים כדי שלא יהיה מסך לבן */
         }
 
         /* מסך התפריט הראשי */
         #menu-screen {
             width: 100%;
             height: 100%;
-            background-image: url('menu_bg.png'); /* תמונת הרקע שיצרנו עם הכפתורים */
+            background-color: #4682B4; /* צבע גיבוי אם התמונה לא נטענת */
+            background-image: url('menu_bg.png'); 
             background-size: cover;
             background-position: center;
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            padding-bottom: 50px; /* מיקום אזור הלחיצה מעל כפתור שחק המקורי */
+            padding-bottom: 50px;
             box-sizing: border-box;
         }
 
-        /* כפתור שקוף שמתלבש בדיוק על כפתור ה"שחק!" של התמונה */
+        /* כפתור שקוף/לחיץ על כפתור שחק */
         #play-button {
             width: 300px;
             height: 90px;
-            background: transparent;
-            border: none;
+            background: rgba(0, 255, 0, 0.2); /* ירוק שקוף עדין כדי שתראה איפה אזור הלחיצה */
+            border: 3px dashed #fff;
             cursor: pointer;
             outline: none;
             margin-bottom: 20px;
+            border-radius: 10px;
         }
 
-        /* מסך המשחק עצמו */
+        /* מסך המשחק */
         #game-screen {
-            display: none; /* מוסתר בהתחלה */
+            display: none; 
             width: 100%;
             height: 100%;
             position: relative;
-            background-image: url('menu_bg.png'); /* משתמש באותו רקע חוף ים מדהים */
+            background-color: #4682B4;
+            background-image: url('menu_bg.png'); 
             background-size: cover;
             background-position: center;
-            cursor: crosshair; /* משנה את הסמן לכוונת */
-        }
-
-        /* שכבת הגנה שמסתירה את האלמנטים של התפריט בזמן המשחק */
-        #game-screen::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(135, 206, 235, 0.1); /* גוון שמיים עדין שמנקה את הטקסטים הישנים */
-            pointer-events: none;
+            cursor: crosshair;
         }
 
         /* הדמות של נתאי */
@@ -69,13 +63,16 @@
             left: 50%;
             width: 180px;
             height: 180px;
-            background-image: url('character.png'); /* תמונת הדמות בלי הרקע הירוק */
+            background-color: #ffcccc; /* ריבוע גיבוי ורדרד למקרה שהתמונה לא נמצאה */
+            background-image: url('character.png'); 
             background-size: contain;
             background-repeat: no-repeat;
+            background-position: center;
             transform: translateX(-50%);
-            transition: left 0.4s ease-in-out; /* תנועה חלקה מצד לצד */
+            transition: left 0.3s ease-in-out;
             cursor: pointer;
             z-index: 10;
+            border-radius: 10px;
         }
 
         /* לוח תוצאה */
@@ -83,14 +80,13 @@
             position: absolute;
             top: 20px;
             right: 20px;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             color: #fff;
             padding: 10px 20px;
             font-size: 24px;
             font-weight: bold;
             border: 4px solid #fff;
             border-radius: 10px;
-            image-rendering: pixelated;
             z-index: 20;
         }
 
@@ -101,14 +97,12 @@
             height: 20px;
             background-color: #555555;
             border: 4px solid #222222;
-            box-shadow: inset -4px -4px 0px #888888; /* אפקט תלת מימד פיקסלי */
-            pointer-events: none; /* שלא יפריע ללחיצות */
+            pointer-events: none;
             transform: translate(-50%, -50%);
             animation: throwEffect 0.2s ease-out forwards;
             z-index: 15;
         }
 
-        /* אפקט קטן של פגיעה (דם פיקסלי / ניצוץ) */
         .hit-effect {
             position: absolute;
             width: 15px;
@@ -119,7 +113,6 @@
             animation: particle 0.3s ease-out forwards;
         }
 
-        /* אנימציות */
         @keyframes throwEffect {
             0% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
             100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
@@ -133,13 +126,10 @@
 </head>
 <body>
 
-    <!-- מסך תפריט ראשי -->
     <div id="menu-screen">
-        <!-- כפתור שקוף שיושב בדיוק על כפתור ה"שחק!" הירוק שבתמונה -->
         <button id="play-button" onclick="startGame()"></button>
     </div>
 
-    <!-- מסך המשחק -->
     <div id="game-screen" onclick="throwStone(event)">
         <div id="score-board">ניקוד: <span id="score">0</span></div>
         <div id="character" onclick="hitCharacter(event)"></div>
@@ -152,65 +142,45 @@
         const character = document.getElementById('character');
         const scoreDisplay = document.getElementById('score');
 
-        // פונקציה לתחילת המשחק ומעבר מסך
         function startGame() {
             menuScreen.style.display = 'none';
             gameScreen.style.display = 'block';
             moveCharacterLoop();
         }
 
-        // לחיצה על המסך - זריקת אבן
         function throwStone(e) {
-            // יוצר אלמנט של אבן במיקום הלחיצה
             const stone = document.createElement('div');
             stone.classList.add('stone');
             stone.style.left = e.clientX + 'px';
             stone.style.top = e.clientY + 'px';
             gameScreen.appendChild(stone);
 
-            // מוחק את האבן אחרי שהאנימציה נגמרת
-            setTimeout(() => {
-                stone.remove();
-            }, 200);
+            setTimeout(() => { stone.remove(); }, 200);
         }
 
-        // לחיצה על הדמות - פגיעה מוצלחת!
         function hitCharacter(e) {
-            // מונע מהקליק "לעבור" לרקע ולייצר סתם עוד אבן
             e.stopPropagation(); 
-
-            // העלאת הניקוד
             score++;
             scoreDisplay.innerText = score;
 
-            // יצירת אפקט פגיעה פיקסלי אדום
             for(let i=0; i<5; i++) {
                 const hit = document.createElement('div');
                 hit.classList.add('hit-effect');
-                // פיזור קל של החלקיקים מסביב לנקודת הלחיצה
                 hit.style.left = (e.clientX + (Math.random() * 40 - 20)) + 'px';
                 hit.style.top = (e.clientY + (Math.random() * 40 - 20)) + 'px';
                 gameScreen.appendChild(hit);
-                
                 setTimeout(() => { hit.remove(); }, 300);
             }
-
-            // הזזת הדמות מיד למקום אחר אחרי שחטפה מכה
             moveCharacter();
         }
 
-        // פונקציה שקובעת מיקום רנדומלי חדש לדמות (על ציר ה-X)
         function moveCharacter() {
-            // משאיר מרווח ביטחון מהקצוות שלא יברח מהמסך
             const padding = 100; 
             const screenWidth = window.innerWidth;
             const randomX = Math.random() * (screenWidth - padding * 2) + padding;
-            
             character.style.left = randomX + 'px';
-            character.style.transform = 'translateX(-50%)';
         }
 
-        // לולאה שגורמת לדמות לזוז מעצמה כל שנייה וחצי אם לא פגעו בה
         function moveCharacterLoop() {
             setInterval(() => {
                 moveCharacter();
