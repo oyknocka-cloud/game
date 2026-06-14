@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>הרבץ לנתאי - המשחק</title>
     <style>
+        /* עיצוב כללי - רקע כחול פיקסלי קבוע שלא יהיה מסך לבן בחיים */
         body, html {
             margin: 0;
             padding: 0;
@@ -13,34 +14,59 @@
             overflow: hidden;
             font-family: 'Courier New', Courier, monospace;
             user-select: none;
-            background-color: #87CEEB; /* צבע גיבוי כחול שמיים כדי שלא יהיה מסך לבן */
+            background: #4a90e2; /* כחול שמיים/ים קבוע */
         }
 
-        /* מסך התפריט הראשי */
+        /* מסך תפריט ראשי */
         #menu-screen {
             width: 100%;
             height: 100%;
-            background-color: #4682B4; /* צבע גיבוי אם התמונה לא נטענת */
-            background-image: url('menu_bg.png'); 
-            background-size: cover;
-            background-position: center;
+            position: absolute;
+            top: 0;
+            left: 0;
             display: flex;
+            flex-direction: column;
             justify-content: center;
-            align-items: flex-end;
-            padding-bottom: 50px;
-            box-sizing: border-box;
+            align-items: center;
+            background: linear-gradient(to bottom, #74b9ff, #0984e3); /* אפקט שמיים וים ב-CSS */
+            z-index: 30;
         }
 
-        /* כפתור שקוף/לחיץ על כפתור שחק */
+        /* כותרת פיקסלית מעוצבת ב-CSS */
+        .game-title {
+            font-size: 48px;
+            color: #ffffff;
+            text-shadow: 4px 4px 0px #000000;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .game-subtitle {
+            font-size: 18px;
+            color: #dfe6e9;
+            text-shadow: 2px 2px 0px #000000;
+            margin-bottom: 50px;
+        }
+
+        /* כפתור שחק ירוק פיקסלי מעוצב מאפס בקוד */
         #play-button {
-            width: 300px;
-            height: 90px;
-            background: rgba(0, 255, 0, 0.2); /* ירוק שקוף עדין כדי שתראה איפה אזור הלחיצה */
-            border: 3px dashed #fff;
+            padding: 20px 60px;
+            font-size: 32px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            color: white;
+            background-color: #2ecc71;
+            border: 4px solid #ffffff;
+            box-shadow: 0px 8px 0px #27ae60, 0px 8px 0px 4px #000000, 4px 4px 0px 4px #000000;
             cursor: pointer;
             outline: none;
-            margin-bottom: 20px;
-            border-radius: 10px;
+            text-shadow: 2px 2px 0px #1bc563;
+        }
+
+        #play-button:active {
+            transform: translateY(4px);
+            box-shadow: 0px 4px 0px #27ae60, 0px 4px 0px 4px #000000, 4px 4px 0px 4px #000000;
         }
 
         /* מסך המשחק */
@@ -49,85 +75,91 @@
             width: 100%;
             height: 100%;
             position: relative;
-            background-color: #4682B4;
-            background-image: url('menu_bg.png'); 
-            background-size: cover;
-            background-position: center;
+            background: linear-gradient(to bottom, #74b9ff 60%, #fab1a0 60%, #ffeaa7 80%, #0984e3 80%); /* רקע חוף ים מובנה ב-CSS */
             cursor: crosshair;
         }
 
-        /* הדמות של נתאי */
+        /* הדמות של נתאי - מוטמעת ישירות כריבוע זמני מעוצב, ואם התמונה קיימת היא תתלבש עליו */
         #character {
             position: absolute;
-            bottom: 15%;
+            bottom: 25%;
             left: 50%;
             width: 180px;
             height: 180px;
-            background-color: #ffcccc; /* ריבוע גיבוי ורדרד למקרה שהתמונה לא נמצאה */
+            /* אם התמונה character.png קיימת היא תעלה, אם לא - הריבוע יישאר מעוצב ולא יתקע את המשחק */
             background-image: url('character.png'); 
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
             transform: translateX(-50%);
-            transition: left 0.3s ease-in-out;
+            transition: left 0.25s ease-out;
             cursor: pointer;
             z-index: 10;
-            border-radius: 10px;
+            
+            /* עיצוב גיבוי זמני למקרה שהתמונה לא נטענת */
+            border: 4px solid #000;
+            background-color: #e17055;
+            box-shadow: 5px 5px 0px #000;
         }
 
-        /* לוח תוצאה */
+        /* לוח תוצאה פיקסלי */
         #score-board {
             position: absolute;
             top: 20px;
             right: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            color: #fff;
-            padding: 10px 20px;
-            font-size: 24px;
+            background: #000000;
+            color: #32ff7e;
+            padding: 10px 25px;
+            font-size: 28px;
             font-weight: bold;
-            border: 4px solid #fff;
-            border-radius: 10px;
+            border: 4px solid #ffffff;
+            box-shadow: 4px 4px 0px #000000;
             z-index: 20;
         }
 
-        /* אבן פיקסלים שנזרקת */
+        /* אבן פיקסלים שנזרקת - מעוצבת כולה ב-CSS */
         .stone {
             position: absolute;
-            width: 20px;
-            height: 20px;
-            background-color: #555555;
-            border: 4px solid #222222;
+            width: 24px;
+            height: 24px;
+            background-color: #7f8c8d;
+            border: 4px solid #2c3e50;
+            box-shadow: inset -4px -4px 0px #95a5a6;
             pointer-events: none;
             transform: translate(-50%, -50%);
-            animation: throwEffect 0.2s ease-out forwards;
+            animation: throwEffect 0.15s ease-out forwards;
             z-index: 15;
         }
 
+        /* אפקט פגיעה */
         .hit-effect {
             position: absolute;
-            width: 15px;
-            height: 15px;
-            background-color: #ff0000;
+            width: 12px;
+            height: 12px;
+            background-color: #ff3838;
+            border: 2px solid #c0392b;
             pointer-events: none;
             z-index: 25;
             animation: particle 0.3s ease-out forwards;
         }
 
         @keyframes throwEffect {
-            0% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+            0% { transform: translate(-50%, -50%) scale(1.8); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0.9; }
         }
 
         @keyframes particle {
             0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-            100% { transform: translate(-50%, -50%) translateY(-30px) scale(0); opacity: 0; }
+            100% { transform: translate(-50%, -50%) translateY(-40px) scale(0); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
     <div id="menu-screen">
-        <button id="play-button" onclick="startGame()"></button>
+        <div class="game-title">הרבץ לנתאי</div>
+        <div class="game-subtitle">Made By Yhonatan Akiva</div>
+        <button id="play-button" onclick="startGame()">שחק!</button>
     </div>
 
     <div id="game-screen" onclick="throwStone(event)">
@@ -141,13 +173,27 @@
         const gameScreen = document.getElementById('game-screen');
         const character = document.getElementById('character');
         const scoreDisplay = document.getElementById('score');
+        let moveInterval;
 
+        // תחילת משחק
         function startGame() {
             menuScreen.style.display = 'none';
             gameScreen.style.display = 'block';
+            
+            // בדיקה אם תמונת הדמות נטענה, אם כן נוריד את עיצוב הגיבוי הכתום
+            const imgCheck = new Image();
+            imgCheck.src = 'character.png';
+            imgCheck.onload = function() {
+                character.style.border = 'none';
+                character.style.backgroundColor = 'transparent';
+                character.style.boxShadow = 'none';
+            };
+            
+            moveCharacter();
             moveCharacterLoop();
         }
 
+        // זריקת אבן
         function throwStone(e) {
             const stone = document.createElement('div');
             stone.classList.add('stone');
@@ -155,15 +201,18 @@
             stone.style.top = e.clientY + 'px';
             gameScreen.appendChild(stone);
 
-            setTimeout(() => { stone.remove(); }, 200);
+            setTimeout(() => { stone.remove(); }, 1500);
         }
 
+        // פגיעה בדמות
         function hitCharacter(e) {
-            e.stopPropagation(); 
+            e.stopPropagation(); // מונע הפעלת זריקה כפולה מהרקע
+            
             score++;
             scoreDisplay.innerText = score;
 
-            for(let i=0; i<5; i++) {
+            // חלקיקי פגיעה פיקסליים
+            for(let i=0; i<6; i++) {
                 const hit = document.createElement('div');
                 hit.classList.add('hit-effect');
                 hit.style.left = (e.clientX + (Math.random() * 40 - 20)) + 'px';
@@ -171,20 +220,25 @@
                 gameScreen.appendChild(hit);
                 setTimeout(() => { hit.remove(); }, 300);
             }
+            
+            // זז מיד כשחוטף מכה
             moveCharacter();
         }
 
+        // הזזת דמות
         function moveCharacter() {
-            const padding = 100; 
+            const padding = 120; 
             const screenWidth = window.innerWidth;
             const randomX = Math.random() * (screenWidth - padding * 2) + padding;
             character.style.left = randomX + 'px';
         }
 
+        // לולאת תנועה אוטומטית
         function moveCharacterLoop() {
-            setInterval(() => {
+            if(moveInterval) clearInterval(moveInterval);
+            moveInterval = setInterval(() => {
                 moveCharacter();
-            }, 1500);
+            }, 1200); // זז כל 1.2 שניות
         }
     </script>
 </body>
