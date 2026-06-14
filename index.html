@@ -6,11 +6,12 @@
     <title>Pixel Catch - Fishing Idle/Clicker</title>
     <style>
         :root {
-            --bg-color: #1a1a2e;
-            --panel-color: #16213e;
-            --accent-color: #0f3460;
-            --text-color: #e94560;
-            --light-text: #e2e2e2;
+            --bg-color: #12161a;
+            --panel-color: #1c232b;
+            --accent-color: #2b3846;
+            --text-color: #4f9da6;
+            --gold-color: #ffd700;
+            --light-text: #f0f4f8;
         }
 
         body {
@@ -25,23 +26,25 @@
 
         .game-container {
             width: 100%;
-            max-width: 800px;
+            max-width: 950px;
             background: var(--panel-color);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.6);
         }
 
         header {
             text-align: center;
             border-bottom: 2px solid var(--accent-color);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
         }
 
         h1 {
             color: var(--text-color);
             margin: 0;
+            font-size: 2.2em;
+            letter-spacing: 1px;
         }
 
         .stats-bar {
@@ -49,23 +52,25 @@
             justify-content: space-around;
             background: var(--bg-color);
             padding: 15px;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: bold;
-            font-size: 1.1em;
-            margin-bottom: 20px;
+            font-size: 1.2em;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         .gold-count {
-            color: #ffd700;
+            color: var(--gold-color);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
         }
 
         .grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 25px;
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 800px) {
             .grid {
                 grid-template-columns: 1fr;
             }
@@ -73,105 +78,161 @@
 
         .panel {
             background: var(--accent-color);
-            padding: 15px;
-            border-radius: 8px;
+            padding: 20px;
+            border-radius: 12px;
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
         }
 
         h2 {
             margin-top: 0;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-            padding-bottom: 5px;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
+            color: var(--text-color);
         }
 
         button {
-            background-color: var(--text-color);
+            background-color: #3a7bd5;
             color: white;
             border: none;
-            padding: 12px 20px;
-            font-size: 1em;
+            padding: 14px 20px;
+            font-size: 1.05em;
             font-weight: bold;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
             width: 100%;
-            transition: background 0.2s;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
         }
 
         button:hover {
-            opacity: 0.9;
+            background-color: #4a8be5;
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(1px);
         }
 
         button:disabled {
-            background-color: #555;
+            background-color: #4a5560;
+            color: #8a99a8;
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
+        /* Fishing Canvas/Image Container */
         .fishing-zone {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 200px;
-            border: 2px dashed #4f7cac;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            background: rgba(15, 52, 96, 0.5);
+            justify-content: flex-end;
+            height: 280px;
+            border-radius: 10px;
+            margin-bottom: 20px;
             position: relative;
             overflow: hidden;
+            background-image: url('watermarked_img_4091871744750856601.png');
+            background-size: cover;
+            background-position: center;
+            box-shadow: inset 0 -60px 80px rgba(0,0,0,0.8), 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .status-overlay {
+            background: rgba(18, 22, 26, 0.85);
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(4px);
+            width: 80%;
+            box-sizing: border-box;
+        }
+
+        #fishing-status {
+            font-size: 1.1em;
+            font-weight: 500;
         }
 
         .log {
             background: var(--bg-color);
-            padding: 10px;
-            border-radius: 5px;
-            height: 100px;
+            padding: 12px;
+            border-radius: 8px;
+            height: 120px;
             overflow-y: auto;
             font-size: 0.9em;
-            font-family: monospace;
+            font-family: 'Courier New', Courier, monospace;
+            border: 1px solid rgba(255,255,255,0.05);
+            margin-top: auto;
+        }
+
+        .shop-section {
+            margin-bottom: 20px;
         }
 
         .shop-item {
-            background: rgba(0,0,0,0.2);
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 10px;
+            background: rgba(0,0,0,0.25);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-left: 4px solid #3a7bd5;
+        }
+
+        .shop-item.owned {
+            border-left-color: #28a745;
         }
 
         .shop-item-details {
-            max-width: 60%;
+            max-width: 65%;
         }
 
         .shop-item-details p {
-            margin: 2px 0;
+            margin: 4px 0 0 0;
             font-size: 0.85em;
-            color: #aaa;
+            color: #a0aec0;
         }
 
         .shop-btn {
             width: auto;
-            padding: 8px 12px;
+            padding: 8px 14px;
             font-size: 0.9em;
             background-color: #28a745;
+        }
+        
+        .shop-btn:hover {
+            background-color: #218838;
         }
 
         /* Simple Progress Bar */
         .progress-container {
             width: 100%;
-            background-color: #ddd;
-            border-radius: 5px;
-            margin-top: 10px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            margin-top: 8px;
             display: none;
+            height: 6px;
+            overflow: hidden;
         }
 
         .progress-bar {
             width: 0%;
-            height: 10px;
-            background-color: var(--text-color);
-            border-radius: 5px;
+            height: 100%;
+            background-color: #4f9da6;
             transition: width 0.1s linear;
+        }
+
+        .inventory-box {
+            background: rgba(0,0,0,0.15);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            min-height: 60px;
         }
     </style>
 </head>
@@ -179,51 +240,53 @@
 
 <div class="game-container">
     <header>
-        <h1>🎣 Pixel Catch</h1>
-        <p>Cast your line, catch rare sea creatures, and become a legendary angler.</p>
+        <h1>🎣 Coastal Angler</h1>
+        <p>Relax on the shore, cast your line, and trade your catches for legendary gear.</p>
     </header>
 
     <div class="stats-bar">
         <div>Gold: <span id="gold-display" class="gold-count">0</span>g</div>
-        <div>Current Rod: <span id="rod-display">Basic Stick</span></div>
+        <div>Equipment: <span id="rod-display">Basic Stick</span></div>
     </div>
 
     <div class="grid">
-        <!-- LEFT: Fishing Action -->
+        <!-- LEFT PANEL: Shoreline & Catching -->
         <div class="panel">
-            <h2>The Fishing Hole</h2>
+            <h2>The Shoreline</h2>
             <div class="fishing-zone" id="fishing-zone">
-                <span id="fishing-status" style="font-size: 1.2em; text-align: center;">The water is calm...</span>
-                <div class="progress-container" id="progress-container">
-                    <div class="progress-bar" id="progress-bar"></div>
+                <div class="status-overlay">
+                    <span id="fishing-status">The tide is just right. Cast whenever you are ready!</span>
+                    <div class="progress-container" id="progress-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
                 </div>
             </div>
             <button id="fish-btn" onclick="startFishing()">Cast Line</button>
             
-            <h3>Inventory (To Sell)</h3>
-            <div id="inventory-list" style="margin-bottom: 15px;">
+            <h3 style="margin-top: 20px; color: #a0aec0;">Your Catch Bucket</h3>
+            <div class="inventory-box" id="inventory-list">
                 <i>Your bucket is empty.</i>
             </div>
-            <button id="sell-btn" onclick="sellAllFish()" style="background-color: #dfa811;" disabled>Sell All Fish</button>
+            <button id="sell-btn" onclick="sellAllFish()" style="background-color: #d97706;" disabled>Sell All Fish</button>
         </div>
 
-        <!-- RIGHT: Shop & Upgrades -->
+        <!-- RIGHT PANEL: Upgrades & Log -->
         <div class="panel">
             <h2>The Wharf Shop</h2>
             
-            <h3>Rods</h3>
-            <div id="rods-shop">
-                <!-- Rods generated by JS -->
+            <div class="shop-section">
+                <h3 style="color: #cbd5e1; margin-bottom: 10px;">Rods</h3>
+                <div id="rods-shop"></div>
             </div>
 
-            <h3>Artifacts</h3>
-            <div id="artifacts-shop">
-                <!-- Artifacts generated by JS -->
+            <div class="shop-section">
+                <h3 style="color: #cbd5e1; margin-bottom: 10px;">Artifacts</h3>
+                <div id="artifacts-shop"></div>
             </div>
 
-            <h3>Log</h3>
+            <h3>Activity Log</h3>
             <div class="log" id="log-box">
-                <div>Welcome to Pixel Catch! Cast your line to begin.</div>
+                <div>Welcome to the beach! Cast your line to catch your first fish.</div>
             </div>
         </div>
     </div>
@@ -235,32 +298,31 @@
         gold: 0,
         currentRodIndex: 0,
         inventory: [],
-        ownedArtifacts: [],
         isFishing: false
     };
 
     // Game Data
     const fishTypes = [
-        { name: "Old Boot", value: 1, chance: 0.2, color: "#777" },
-        { name: "Minnow", value: 5, chance: 0.4, color: "#a8dadc" },
-        { name: "Bass", value: 15, chance: 0.25, color: "#457b9d" },
-        { name: "Salmon", value: 40, chance: 0.1, color: "#e63946" },
-        { name: "Golden Koi", value: 150, chance: 0.04, color: "#ffb703" },
-        { name: "Kraken Tentacle", value: 600, chance: 0.01, color: "#9d4edd" }
+        { name: "Seaweed", value: 2, chance: 0.15, color: "#718096" },
+        { name: "Sand Whiting", value: 8, chance: 0.4, color: "#cbd5e0" },
+        { name: "Mackerel", value: 22, chance: 0.25, color: "#4fa697" },
+        { name: "Snapper", value: 55, chance: 0.13, color: "#e53e3e" },
+        { name: "Blue Marlin", value: 200, chance: 0.05, color: "#3182ce" },
+        { name: "Great White Shark", value: 750, chance: 0.02, color: "#805ad5" }
     ];
 
     const rods = [
         { name: "Basic Stick", cost: 0, timeReduction: 0, luckBonus: 0 },
-        { name: "Bamboo Pole", cost: 50, timeReduction: 1000, luckBonus: 0.05 },
-        { name: "Fiberglass Rod", cost: 250, timeReduction: 2000, luckBonus: 0.12 },
-        { name: "Titanium Reel", cost: 1000, timeReduction: 3000, luckBonus: 0.25 },
-        { name: "Poseidon's Trident", cost: 5000, timeReduction: 4000, luckBonus: 0.50 }
+        { name: "Coastal Bamboo Pole", cost: 60, timeReduction: 1200, luckBonus: 0.05 },
+        { name: "Surfcasting Fiberglass Rod", cost: 300, timeReduction: 2400, luckBonus: 0.15 },
+        { name: "Graphite Reel Supreme", cost: 1200, timeReduction: 3600, luckBonus: 0.30 },
+        { name: "Neptune's Tidecaller", cost: 6000, timeReduction: 4500, luckBonus: 0.60 }
     ];
 
     const artifacts = [
-        { id: "shiny_lure", name: "Shiny Lure", cost: 100, desc: "+20% more gold per fish sold", multiplier: 1.2, bought: false },
-        { id: "lucky_charm", name: "Mermaid's Charm", cost: 500, desc: "Double chance for rare fish", multiplier: 2, bought: false },
-        { id: "net", name: "Trawl Net", cost: 2000, desc: "Passively catches a fish every 8 seconds", multiplier: 0, bought: false }
+        { id: "premium_bait", name: "Premium Baitbox", cost: 150, desc: "+25% extra gold for all sold fish", multiplier: 1.25, bought: false },
+        { id: "polarized_glasses", name: "Polarized Sunnies", cost: 750, desc: "Double the catch probability of rare specimens", multiplier: 2, bought: false },
+        { id: "automated_buoy", name: "Tidal Drone Buoy", cost: 2500, desc: "Passively combs the surf, landing a fish every 7s", multiplier: 0, bought: false }
     ];
 
     // Core Logic
@@ -274,14 +336,13 @@
             invBox.innerHTML = "<i>Your bucket is empty.</i>";
             document.getElementById('sell-btn').disabled = true;
         } else {
-            // Count duplicates
             let counts = {};
             gameState.inventory.forEach(fish => counts[fish.name] = (counts[fish.name] || 0) + 1);
             
             invBox.innerHTML = Object.keys(counts).map(name => {
                 let fishObj = fishTypes.find(f => f.name === name);
                 let value = Math.floor(fishObj.value * (artifacts[0].bought ? artifacts[0].multiplier : 1));
-                return `<div style="color:${fishObj.color}">${name} x${counts[name]} (${value}g each)</div>`;
+                return `<div style="color:${fishObj.color}; margin-bottom: 4px; font-weight: 500;">🔹 ${name} x${counts[name]} (${value}g ea)</div>`;
             }).join('');
             document.getElementById('sell-btn').disabled = false;
         }
@@ -305,13 +366,12 @@
         const progBar = document.getElementById('progress-bar');
 
         fishBtn.disabled = true;
-        statusText.innerText = "Waiting for a bite...";
+        statusText.innerText = "Line casted into the surf... watching the tip...";
         progContainer.style.display = "block";
         progBar.style.width = "0%";
 
-        // Calculate fishing time (base 6 seconds, reduced by rod)
         let baseTime = 6000;
-        let finalTime = Math.max(1500, baseTime - rods[gameState.currentRodIndex].timeReduction);
+        let finalTime = Math.max(1200, baseTime - rods[gameState.currentRodIndex].timeReduction);
 
         let startTime = Date.now();
         let interval = setInterval(() => {
@@ -332,26 +392,19 @@
         document.getElementById('fish-btn').disabled = false;
         document.getElementById('progress-container').style.display = "none";
 
-        // Determine Fish Caught
         let currentRod = rods[gameState.currentRodIndex];
-        let roll = Math.random();
-        
-        // Adjust chances if they own the Lucky Charm
         let luckMod = artifacts[1].bought ? artifacts[1].multiplier : 1;
 
-        // Build dynamically scaled chances
         let pool = [];
         fishTypes.forEach(fish => {
             let chance = fish.chance;
-            // Boost rare fishes if luck is high
-            if (fish.value > 15) chance *= (1 + currentRod.luckBonus) * luckMod;
+            if (fish.value > 22) chance *= (1 + currentRod.luckBonus) * luckMod;
             pool.push({ fish: fish, weight: chance });
         });
 
-        // Simple weighted random selection
         let totalWeight = pool.reduce((sum, item) => sum + item.weight, 0);
         let randomWeight = Math.random() * totalWeight;
-        let selectedFish = fishTypes[0]; // Fallback
+        let selectedFish = fishTypes[0];
 
         let currentSum = 0;
         for (let i = 0; i < pool.length; i++) {
@@ -363,8 +416,8 @@
         }
 
         gameState.inventory.push(selectedFish);
-        document.getElementById('fishing-status').innerText = `Caught a ${selectedFish.name}!`;
-        log(`Hooked a <span style="color:${selectedFish.color}; font-weight:bold;">${selectedFish.name}</span>!`);
+        document.getElementById('fishing-status').innerText = `Splashtastic! Reeled in a ${selectedFish.name}!`;
+        log(`🎣 Landed a <span style="color:${selectedFish.color}; font-weight:bold;">${selectedFish.name}</span>.`);
         updateUI();
     }
 
@@ -379,44 +432,42 @@
         });
 
         gameState.gold += totalEarnings;
-        log(`Sold ${gameState.inventory.length} fish for <span style="color:#ffd700">${totalEarnings}g</span>.`);
+        log(`💰 Sold bucket contents at the docks for <span style="color:var(--gold-color); font-weight:bold;">${totalEarnings}g</span>.`);
         gameState.inventory = [];
         updateUI();
     }
 
-    // Shop Rendering
     function renderShop() {
-        // Render Rods
+        // Rod Shop
         const rodShop = document.getElementById('rods-shop');
         rodShop.innerHTML = '';
-        
-        // Next available rod
         let nextRodIndex = gameState.currentRodIndex + 1;
+        
         if (nextRodIndex < rods.length) {
             let nextRod = rods[nextRodIndex];
             rodShop.innerHTML = `
                 <div class="shop-item">
                     <div class="shop-item-details">
                         <strong>${nextRod.name}</strong>
-                        <p>Speeds up fishing & increases rare catch chance.</p>
+                        <p>Decreases wait times and unlocks rare aquatic life.</p>
                     </div>
                     <button class="shop-btn" onclick="buyRod(${nextRodIndex})" ${gameState.gold < nextRod.cost ? 'disabled' : ''}>Buy: ${nextRod.cost}g</button>
                 </div>
             `;
         } else {
-            rodShop.innerHTML = '<p>You own the ultimate fishing rod!</p>';
+            rodShop.innerHTML = '<p style="color: #28a745; font-size:0.9em; margin: 5px 0;">✨ You possess the apex fishing instrument.</p>';
         }
 
-        // Render Artifacts
+        // Artifacts Shop
         const artShop = document.getElementById('artifacts-shop');
         artShop.innerHTML = '';
         
         artifacts.forEach((art, index) => {
             if (art.bought) {
                 artShop.innerHTML += `
-                    <div class="shop-item" style="opacity: 0.6;">
+                    <div class="shop-item owned">
                         <div class="shop-item-details">
-                            <strong>${art.name} [OWNED]</strong>
+                            <strong style="color: #28a745;">${art.name} ✔</strong>
                             <p>${art.desc}</p>
                         </div>
                     </div>
@@ -440,7 +491,7 @@
         if (gameState.gold >= rod.cost) {
             gameState.gold -= rod.cost;
             gameState.currentRodIndex = index;
-            log(`Upgraded to <span style="color:#00f0ff">${rod.name}</span>!`);
+            log(`🛠️ Upgraded tackle to: <span style="color:var(--text-color); font-weight:bold;">${rod.name}</span>.`);
             updateUI();
         }
     }
@@ -450,21 +501,17 @@
         if (gameState.gold >= art.cost && !art.bought) {
             gameState.gold -= art.cost;
             art.bought = true;
-            log(`Acquired artifact: <span style="color:#ff00ff">${art.name}</span>!`);
+            log(`✨ Unlocked Artifact: <span style="color:#d97706; font-weight:bold;">${art.name}</span>.`);
             
-            // Activate passive net if bought
-            if (art.id === "net") {
+            if (art.id === "automated_buoy") {
                 startPassiveNet();
             }
-            
             updateUI();
         }
     }
 
-    // Passive Trawl Net Artifact
     function startPassiveNet() {
         setInterval(() => {
-            // Randomly picks a fish ignoring luck modifiers for pure passive gain
             let roll = Math.random();
             let selectedFish = fishTypes[0];
             let cumulative = 0;
@@ -476,12 +523,12 @@
                 }
             }
             gameState.inventory.push(selectedFish);
-            log(`🤖 <span style="color:#aaa">Your Net passively scooped up a ${selectedFish.name}.</span>`);
+            log(`🤖 <span style="color:#a0aec0">The Tidal Drone automatically swept up a ${selectedFish.name} from the surf.</span>`);
             updateUI();
-        }, 8000);
+        }, 7000);
     }
 
-    // Initialize Game
+    // Init
     updateUI();
 </script>
 
