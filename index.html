@@ -2,128 +2,145 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>הרבץ לנתאי</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=none">
+    <title>הרבץ לנתאי - המשחק</title>
     <style>
+        /* איפוס הגדרות למסך מלא בכל מכשיר */
         body, html {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
             overflow: hidden;
-            user-select: none;
             background-color: #000;
+            font-family: 'Courier New', Courier, monospace;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
-        /* מסך תפריט ראשי - משתמש בתמונת הרקע המלאה שיצרנו */
+        /* קונטיינר מרכזי ששומר על פרופורציות המשחק */
+        .game-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            max-width: 100vw;
+            max-height: 100vh;
+        }
+
+        /* מסך התפריט הראשי - הרקע של חוף הים */
         #menu-screen {
             width: 100%;
             height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            /* שימוש בגרפיקה המקורית של הים והכפתור שיצרנו */
-            background-image: url('https://cdn.discordapp.com/attachments/1509955280425717770/1515844193845645475/hit.jpg?ex=6a307b6a&is=6a2f29ea&hm=90846bbf89863728b5674dd1233653ce25209d42b99f31a1aae0bb8fd2ebdb1f&'); /* החלף בקישור לתמונת הרקע המקורית של הים עם הכפתור במידת הצורך */
-            background-color: #4682B4; 
+            background-image: url('menu_bg.jpg');
             background-size: cover;
             background-position: center;
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            padding-bottom: 8%; /* מושיב את אזור הלחיצה בול על כפתור שחק! הירוק */
-            box-sizing: border-box;
+            position: absolute;
+            top: 0;
+            left: 0;
             z-index: 20;
         }
 
-        /* כפתור לחיצה שקוף לחלוטין שיושב מעל הכפתור הירוק של הגרפיקה שלך */
+        /* כפתור ה"שחק!" הירוק הפיקסלי - מעוצב רספונסיבית מעל התמונה */
         #play-button {
-            width: 260px;
-            height: 80px;
-            background: transparent;
-            border: none;
+            padding: 15px 50px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #2ecc71;
+            border: 4px solid #fff;
+            box-shadow: 0px 6px 0px #27ae60, 0px 6px 0px 4px #000;
             cursor: pointer;
-            outline: none;
+            margin-bottom: 8vh; /* מתאים את עצמו לפי גובה המסך (PC או טלפון) */
+            text-shadow: 2px 2px 0px #000;
+            image-rendering: pixelated;
         }
 
-        /* מסך המשחק - משתמש באותו רקע ים (בלי הדמות) */
+        #play-button:active {
+            transform: translateY(4px);
+            box-shadow: 0px 2px 0px #27ae60, 0px 2px 0px 4px #000;
+        }
+
+        /* מסך המשחק הראשי */
         #game-screen {
             display: none;
             width: 100%;
             height: 100%;
-            position: relative;
-            background-image: url('https://cdn.discordapp.com/attachments/1509955280425717770/1515844193845645475/hit.jpg?ex=6a307b6a&is=6a2f29ea&hm=90846bbf89863728b5674dd1233653ce25209d42b99f31a1aae0bb8fd2ebdb1f&'); /* אותו רקע פיקסלים של הים */
+            background-image: url('menu_bg.jpg');
             background-size: cover;
             background-position: center;
+            position: absolute;
+            top: 0;
+            left: 0;
             cursor: crosshair;
         }
 
-        /* הדמות הפיקסלית של נתאי עם החצקונים, הגשר, הסירחון והכובע */
+        /* הדמות הפיקסלית של נתאי */
         #character {
             position: absolute;
-            bottom: 15%;
+            bottom: 20%;
             left: 50%;
-            width: 250px; /* גודל מותאם לדמות */
-            height: 250px;
-            /* קישור ישיר לתמונת הדמות שהעלית */
-            background-image: url('https://cdn.discordapp.com/attachments/1509955280425717770/1515844210778050701/hitc.jpg?ex=6a307b6e&is=6a2f29ee&hm=7c6277a68e6cdba80a6095e60e0a596939740e79c0be244154ae17e4feb010b5&'); 
+            width: 30vh; /* הגודל מתאים את עצמו אוטומטית לפי גובה המסך */
+            height: 30vh;
+            background-image: url('character.jpg');
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
             transform: translateX(-50%);
             transition: left 0.2s ease-out;
-            cursor: pointer;
             z-index: 10;
         }
 
-        /* לוח ניקוד פיקסלי מעל המשחק */
+        /* לוח ניקוד עליון */
         #score-board {
             position: absolute;
             top: 20px;
             right: 20px;
-            background: rgba(0, 0, 0, 0.85);
-            color: #2ecc71;
-            padding: 12px 25px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 28px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 24px;
             font-weight: bold;
-            border: 4px solid #ffffff;
-            image-rendering: pixelated;
+            border: 3px solid #fff;
             z-index: 30;
-            direction: rtl;
+            pointer-events: none;
         }
 
-        /* אבני פיקסלים שנזרקות בקליק */
+        /* אבן פיקסלים שנזרקת */
         .stone {
             position: absolute;
             width: 20px;
             height: 20px;
             background-color: #7f8c8d;
-            border: 4px solid #2c3e50;
-            box-shadow: inset -4px -4px 0px #95a5a6;
+            border: 3px solid #2c3e50;
+            box-shadow: inset -3px -3px 0px #95a5a6;
             pointer-events: none;
             transform: translate(-50%, -50%);
-            animation: throw 0.15s ease-out forwards;
+            animation: throwEffect 0.15s ease-out forwards;
             z-index: 15;
+            image-rendering: pixelated;
         }
 
-        /* אפקט דם/ניצוץ פיקסלי אדום כשפוגעים בו */
+        /* אפקט חלקיקי פגיעה אדומים */
         .hit-particle {
             position: absolute;
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             background-color: #ff3838;
-            border: 2px solid #c0392b;
+            border: 1px solid #000;
             pointer-events: none;
             z-index: 25;
-            animation: particle 0.3s ease-out forwards;
+            animation: particleEffect 0.3s ease-out forwards;
         }
 
-        @keyframes throw {
-            0% { transform: translate(-50%, -50%) scale(2); opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+        @keyframes throwEffect {
+            0% { transform: translate(-50%, -50%) scale(1.8); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0.9; }
         }
 
-        @keyframes particle {
+        @keyframes particleEffect {
             0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
             100% { transform: translate(-50%, -50%) translate(var(--x), var(--y)) scale(0); opacity: 0; }
         }
@@ -131,13 +148,15 @@
 </head>
 <body>
 
-    <div id="menu-screen">
-        <button id="play-button" onclick="startGame()"></button>
-    </div>
+    <div class="game-container">
+        <div id="menu-screen">
+            <button id="play-button" onclick="startGame(event)">שחק!</button>
+        </div>
 
-    <div id="game-screen" onclick="throwStone(event)">
-        <div id="score-board">ניקוד: <span id="score">0</span></div>
-        <div id="character" onclick="hitCharacter(event)"></div>
+        <div id="game-screen" onmousedown="throwStone(event)" ontouchstart="throwStone(event)">
+            <div id="score-board">ניקוד: <span id="score">0</span></div>
+            <div id="character" onmousedown="hitCharacter(event)" ontouchstart="hitCharacter(event)"></div>
+        </div>
     </div>
 
     <script>
@@ -148,44 +167,49 @@
         const scoreDisplay = document.getElementById('score');
         let gameInterval;
 
-        // מעבר מהתפריט למשחק
-        function startGame() {
+        function startGame(e) {
+            e.stopPropagation();
             menuScreen.style.display = 'none';
             gameScreen.style.display = 'block';
             moveCharacter();
-            
-            // לולאה שגורמת לו לזוז מצד לצד
-            gameInterval = setInterval(moveCharacter, 1300);
+            gameInterval = setInterval(moveCharacter, 1400); // זז כל 1.4 שניות
         }
 
-        // זריקת אבן במיקום הלחיצה
         function throwStone(e) {
+            // תמיכה גם בלחיצת עכבר וגם בנגיעה בטלפון
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+            
+            if (!clientX || !clientY) return;
+
             const stone = document.createElement('div');
             stone.classList.add('stone');
-            stone.style.left = e.clientX + 'px';
-            stone.style.top = e.clientY + 'px';
+            stone.style.left = clientX + 'px';
+            stone.style.top = clientY + 'px';
             gameScreen.appendChild(stone);
 
-            setTimeout(() => { stone.remove(); }, 1500);
+            setTimeout(() => { stone.remove(); }, 150);
         }
 
-        // פגיעה בדמות של נתאי
         function hitCharacter(e) {
-            e.stopPropagation(); // מונע יצירת אבן נוספת מהרקע
-            
+            e.stopPropagation(); // מונע זריקת אבן כפולה מהרקע
+            e.preventDefault();
+
             score++;
             scoreDisplay.innerText = score;
 
-            // יצירת חלקיקי פגיעה שעפים לצדדים
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+            // יצירת חלקיקים שעפים לכל הכיוונים מהפגיעה
             for (let i = 0; i < 8; i++) {
                 const particle = document.createElement('div');
                 particle.classList.add('hit-particle');
-                particle.style.left = e.clientX + 'px';
-                particle.style.top = e.clientY + 'px';
-                
-                // כיוון רנדומלי לחלקיקים
-                const x = (Math.random() - 0.5) * 100 + 'px';
-                const y = (Math.random() - 0.5) * 100 - 50 + 'px';
+                particle.style.left = clientX + 'px';
+                particle.style.top = clientY + 'px';
+
+                const x = (Math.random() - 0.5) * 80 + 'px';
+                const y = (Math.random() - 0.5) * 80 - 30 + 'px';
                 particle.style.setProperty('--x', x);
                 particle.style.setProperty('--y', y);
 
@@ -193,17 +217,20 @@
                 setTimeout(() => { particle.remove(); }, 300);
             }
 
-            // זז מיד למקום אחר כשחוטף מכה
             moveCharacter();
         }
 
-        // חישוב מיקום רנדומלי על המסך
         function moveCharacter() {
-            const padding = 150;
             const screenWidth = window.innerWidth;
+            // משאיר שוליים כדי שלא יברח מהמסך במובייל
+            const padding = screenWidth * 0.15; 
             const randomX = Math.random() * (screenWidth - padding * 2) + padding;
+            
             character.style.left = randomX + 'px';
         }
+
+        // התאמה דינמית אם משנים את גודל המסך (למשל הופכים את הטלפון לרוחב)
+        window.addEventListener('resize', moveCharacter);
     </script>
 </body>
 </html>
